@@ -1,17 +1,18 @@
 ﻿using LegacyApp.Abstractions;
 using LegacyApp.Abstractions.Validation;
 using LegacyApp.Models;
-using LegacyApp.Services;
+using System;
 
 namespace LegacyApp.Validation.Client
 {
     public class ImportantClientValidator : ClientValidatorBase
     {
-        public ImportantClientValidator(IUserCredit userCreditService) : base(userCreditService) { }
+        public ImportantClientValidator(Func<IUserCredit> userCreditServiceFactory) : base(userCreditServiceFactory) { }
 
         public override void CheckCredit(ref User user)
         {
-            int creditLimit = _userCreditService.GetCreditLimit(user.LastName, user.DateOfBirth);
+            using var userCreditService = _userCreditServiceFactory();
+            int creditLimit = userCreditService.GetCreditLimit(user.LastName, user.DateOfBirth);
             creditLimit = creditLimit * 2;
             user.CreditLimit = creditLimit;
         }

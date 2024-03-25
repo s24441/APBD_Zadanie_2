@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace LegacyApp.Services
 {
-    public class UserCreditService : IUserCredit, IDisposable
+    public class UserCreditService : IUserCredit
     {
         /// <summary>
         /// Simulating database

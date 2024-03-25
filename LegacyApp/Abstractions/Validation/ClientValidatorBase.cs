@@ -14,7 +14,7 @@ namespace LegacyApp.Abstractions.Validation
 
         static ClientValidatorBase()
         {
-            var userCreditServiceSingleton = new UserCreditService();
+            Func<IUserCredit> userCreditServiceFactorySingleton = () => new UserCreditService();
 
             var registeredClientTypes = Enum.GetValues<ClientType>().Select(type => $"{type}ClientValidator");
             Factory = Assembly
@@ -28,14 +28,14 @@ namespace LegacyApp.Abstractions.Validation
                     registeredClientTypes.Contains(type.Name))
                 .ToDictionary(
                     type => Enum.Parse<ClientType>(type.Name.Replace("ClientValidator", "")), 
-                    type => (ClientValidatorBase)Activator.CreateInstance(type, userCreditServiceSingleton)
+                    type => (ClientValidatorBase)Activator.CreateInstance(type, userCreditServiceFactorySingleton)
                 );
         }
 
-        protected readonly IUserCredit _userCreditService;
-        protected ClientValidatorBase(IUserCredit userCreditService)
+        protected readonly Func<IUserCredit> _userCreditServiceFactory;
+        protected ClientValidatorBase(Func<IUserCredit> userCreditServiceFactory)
         {
-            _userCreditService = userCreditService;
+            _userCreditServiceFactory = userCreditServiceFactory;
         }
         public abstract void CheckCredit(ref User user);
         public virtual bool ValidateCredit(User user) => !(user.HasCreditLimit && user.CreditLimit < 500);
