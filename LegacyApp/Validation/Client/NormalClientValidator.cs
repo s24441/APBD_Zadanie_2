@@ -5,14 +5,14 @@ using LegacyApp.Services;
 
 namespace LegacyApp.Validation.Client
 {
-    public class ImportantClientValidator : ClientValidatorBase
+    public class NormalClientValidator : ClientValidatorBase
     {
-        public ImportantClientValidator(IUserCredit userCreditService) : base(userCreditService) { }
+        public NormalClientValidator(IUserCredit userCreditService) : base(userCreditService) { }
 
         public override void CheckCredit(ref User user)
         {
+            user.HasCreditLimit = true;
             int creditLimit = _userCreditService.GetCreditLimit(user.LastName, user.DateOfBirth);
-            creditLimit = creditLimit * 2;
             user.CreditLimit = creditLimit;
         }
     }

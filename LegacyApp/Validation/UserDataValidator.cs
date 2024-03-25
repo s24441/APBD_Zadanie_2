@@ -8,7 +8,7 @@ namespace LegacyApp.Validation
     public class UserDataValidator : IUserDataValidator
     {
         public bool NotValidNames(params string[] names) => names.Any(string.IsNullOrEmpty);
-        public bool NotValidEmail(string email) => !Regex.IsMatch(email, "^[a-zA-Z0-9]@[a-zA-Z0-9]\\.[a-zA-Z0-9]$");
+        public bool NotValidEmail(string email) => !Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase);
         public bool NotValidBirthDate(DateTime birthDate)
         {
             var now = DateTime.Now;
